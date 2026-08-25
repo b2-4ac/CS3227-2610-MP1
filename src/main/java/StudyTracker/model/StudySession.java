@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Represents a single study session completed by the user.
  */
@@ -14,7 +16,11 @@ public class StudySession {
     private LocalDateTime endTime;
     private Duration elapsedTime;
 
-    public StudySession(Subject subject, LocalDateTime startTime, LocalDateTime endTime, Duration elapsedTime) {
+    public StudySession(
+            @JsonProperty("subject") Subject subject,
+            @JsonProperty("startTime") LocalDateTime startTime,
+            @JsonProperty("endTime") LocalDateTime endTime,
+            @JsonProperty("elapsedTime") Duration elapsedTime) {
         this.subject = Objects.requireNonNull(subject, "Subject cannot be null");
         this.startTime = Objects.requireNonNull(startTime, "Start Time cannot be null");
         this.endTime = Objects.requireNonNull(endTime, "End Time cannot be null");

@@ -2,3 +2,5 @@
 /.gradle/
 
 *.class
+
+sessions.json

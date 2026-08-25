@@ -1,5 +1,6 @@
 package studytracker.ui;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Scanner;
 
@@ -95,10 +96,12 @@ public class ConsoleUI {
             System.out.println("Study session completed!");
             System.out.println("Subject: " + session.getSubject());
             System.out.println("Duration: " + formatDuration(session.getDuration()));
-
         } catch (IllegalStateException e) {
             System.out.println();
             System.out.println("Unable to stop session: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println();
+            System.out.println("An error has occured while saving the session: " + e.getMessage());
 
         }
     }
