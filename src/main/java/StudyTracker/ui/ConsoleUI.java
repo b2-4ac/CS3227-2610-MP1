@@ -1,12 +1,12 @@
-package StudyTracker.ui;
+package studytracker.ui;
 
 import java.time.Duration;
 import java.util.Scanner;
 
-import StudyTracker.controller.TimerController;
-import StudyTracker.model.StudySession;
-import StudyTracker.model.Subject;
-import StudyTracker.model.TimerState;
+import studytracker.controller.TimerController;
+import studytracker.model.StudySession;
+import studytracker.model.Subject;
+import studytracker.model.TimerState;
 
 public class ConsoleUI {
 
@@ -55,14 +55,10 @@ public class ConsoleUI {
         System.out.println("2. Stop Study Session");
         System.out.println("3. View Timer Status");
         System.out.println("4. Exit");
-        System.out.print("Select an option: ");
     }
 
     private int getMenuChoice() {
-        while (!scanner.hasNextInt()) {
-            System.out.print("Please enter a number: ");
-            scanner.next();
-        }
+        System.out.print("Please enter a number: ");
 
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume newline

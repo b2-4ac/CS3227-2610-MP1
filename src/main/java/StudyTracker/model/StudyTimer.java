@@ -1,4 +1,4 @@
-package StudyTracker.model;
+package studytracker.model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

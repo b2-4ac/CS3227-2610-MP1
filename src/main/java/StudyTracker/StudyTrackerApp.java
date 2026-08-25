@@ -1,8 +1,8 @@
-package StudyTracker;
+package studytracker;
 
-import StudyTracker.controller.TimerController;
-import StudyTracker.model.StudyTimer;
-import StudyTracker.ui.ConsoleUI;
+import studytracker.controller.TimerController;
+import studytracker.model.StudyTimer;
+import studytracker.ui.ConsoleUI;
 
 public class StudyTrackerApp {
 

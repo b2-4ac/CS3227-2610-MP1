@@ -1,11 +1,11 @@
-package StudyTracker.controller;
+package studytracker.controller;
 
 import java.time.Duration;
 
-import StudyTracker.model.StudySession;
-import StudyTracker.model.StudyTimer;
-import StudyTracker.model.Subject;
-import StudyTracker.model.TimerState;
+import studytracker.model.StudySession;
+import studytracker.model.StudyTimer;
+import studytracker.model.Subject;
+import studytracker.model.TimerState;
 
 public class TimerController {
 
