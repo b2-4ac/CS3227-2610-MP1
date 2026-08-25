@@ -2,6 +2,7 @@ package studytracker.ui;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.Scanner;
 
 import studytracker.controller.TimerController;
@@ -33,7 +34,8 @@ public class ConsoleUI {
                 case 1 -> startStudySession();
                 case 2 -> stopStudySession();
                 case 3 -> displayTimerStatus();
-                case 4 -> {
+                case 4 -> viewPastSessions();
+                case 5 -> {
                     System.out.println("Goodbye!");
                     running = false;
                 }
@@ -55,7 +57,8 @@ public class ConsoleUI {
         System.out.println("1. Start Study Session");
         System.out.println("2. Stop Study Session");
         System.out.println("3. View Timer Status");
-        System.out.println("4. Exit");
+        System.out.println("4. View Past Sessions");
+        System.out.println("5. Exit");
     }
 
     private int getMenuChoice() {
@@ -120,6 +123,37 @@ public class ConsoleUI {
 
             System.out.println(
                     "Elapsed time: " + formatDuration(elapsedTime));
+        }
+    }
+
+    private void viewPastSessions() {
+
+        try {
+            List<StudySession> sessions = timerController.getPastSessions();
+
+            if (sessions.isEmpty()) {
+                System.out.println();
+                System.out.println("No past study sessions found.");
+                return;
+            }
+
+            System.out.println();
+            System.out.println("===== Past Study Sessions =====");
+
+            for (int i = 0; i < sessions.size(); i++) {
+
+                StudySession session = sessions.get(i);
+
+                System.out.println();
+                System.out.println("Session " + (i + 1));
+                System.out.println("Subject: " + session.getSubject());
+                System.out.println("Start: " + session.getStartTime());
+                System.out.println("End: " + session.getEndTime());
+                System.out.println("Duration: " + formatDuration(session.getDuration()));
+            }
+
+        } catch (IOException e) {
+            System.out.println("Unable to load past sessions: " + e.getMessage());
         }
     }
 

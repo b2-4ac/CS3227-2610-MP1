@@ -49,6 +49,8 @@ public class StudySessionStorage {
 
         sessions.add(session);
 
+        Files.createDirectories(filePath.getParent());
+
         objectMapper.writeValue(
                 filePath.toFile(),
                 sessions);

@@ -14,17 +14,17 @@ public class StudySession {
     private Subject subject;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Duration elapsedTime;
+    private Duration duration;
 
     public StudySession(
             @JsonProperty("subject") Subject subject,
             @JsonProperty("startTime") LocalDateTime startTime,
             @JsonProperty("endTime") LocalDateTime endTime,
-            @JsonProperty("elapsedTime") Duration elapsedTime) {
+            @JsonProperty("duration") Duration duration) {
         this.subject = Objects.requireNonNull(subject, "Subject cannot be null");
         this.startTime = Objects.requireNonNull(startTime, "Start Time cannot be null");
         this.endTime = Objects.requireNonNull(endTime, "End Time cannot be null");
-        this.elapsedTime = Objects.requireNonNull(elapsedTime, "Elapsed Time cannot be null");
+        this.duration = Objects.requireNonNull(duration, "Elapsed Time cannot be null");
 
         if (endTime.isBefore(startTime)) {
             throw new IllegalArgumentException("End Time cannot be before Start Time");
@@ -44,6 +44,6 @@ public class StudySession {
     }
 
     public Duration getDuration() {
-        return this.elapsedTime;
+        return this.duration;
     }
 }

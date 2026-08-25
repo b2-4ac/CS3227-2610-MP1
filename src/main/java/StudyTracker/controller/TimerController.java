@@ -2,6 +2,7 @@ package studytracker.controller;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 
 import studytracker.model.StudySession;
 import studytracker.model.StudyTimer;
@@ -49,5 +50,9 @@ public class TimerController {
 
     public Duration getElapsedTime() {
         return timer.getElapsedTime();
+    }
+
+    public List<StudySession> getPastSessions() throws IOException {
+        return storage.loadAll();
     }
 }
