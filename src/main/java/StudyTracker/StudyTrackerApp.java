@@ -15,7 +15,7 @@ public class StudyTrackerApp {
         StudyTimer timer = new StudyTimer();
 
         // Create Storage Object
-        StudySessionStorage storage = new StudySessionStorage(Path.of("sessions.json"));
+        StudySessionStorage storage = new StudySessionStorage(Path.of("/data/sessions.json"));
 
         // Create the controller
         TimerController timerController = new TimerController(timer, storage);
