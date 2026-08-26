@@ -2,12 +2,17 @@ package studytracker.ui;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import studytracker.controller.TimerController;
 import studytracker.model.StudySession;
 import studytracker.model.Subject;
+import studytracker.controller.StatisticsController;
 import studytracker.controller.SubjectController;
 import studytracker.model.TimerState;
 
@@ -16,11 +21,13 @@ public class ConsoleUI {
     private final Scanner scanner;
     private final TimerController timerController;
     private final SubjectController subjectController;
+    private final StatisticsController statisticsController;
 
-    public ConsoleUI(TimerController timerController, SubjectController subjectController) {
+    public ConsoleUI(TimerController timerController, SubjectController subjectController, StatisticsController statisticsController) {
         this.scanner = new Scanner(System.in);
         this.timerController = timerController;
         this.subjectController = subjectController;
+        this.statisticsController = statisticsController;
     }
 
     public void run() {
@@ -68,6 +75,10 @@ public class ConsoleUI {
                 break;
 
             case 6:
+                viewStatistics();
+                break;
+
+            case 7:
                 isAppRunning = false;
                 break;
 
@@ -148,7 +159,8 @@ public class ConsoleUI {
         System.out.println("3. View Timer Status");
         System.out.println("4. View Past Sessions");
         System.out.println("5. Manage Subjects");
-        System.out.println("6. Exit");
+        System.out.println("6. View Statistics");
+        System.out.println("7. Exit");
     }
 
     private int getMenuChoice() {
@@ -349,6 +361,87 @@ public class ConsoleUI {
 
         } catch (IOException e) {
             System.out.println("Unable to delete subject: " + e.getMessage());
+        }
+    }
+
+    private void viewStatistics() {
+
+    System.out.println();
+    System.out.println("===== STUDY STATISTICS =====");
+
+    LocalDate startDate = getDate("Enter start date (DD-MM-YYYY): ");
+    LocalDate endDate = getDate("Enter end date (DD-MM-YYYY): ");
+
+    if (endDate.isBefore(startDate)) {
+
+        System.out.println("End date cannot be before start date.");
+
+        return;
+    }
+
+    try {
+
+        Duration totalStudyTime = statisticsController.getTotalStudyTime(startDate, endDate);
+
+        Map<String, Duration> studyTimeBySubject = statisticsController.getStudyTimeBySubject(startDate, endDate);
+
+        System.out.println();
+        System.out.println(
+                "===== RESULTS ====="
+        );
+
+        System.out.println(
+                "Period: " + startDate + " to " + endDate);
+
+        System.out.println("Total Study Time: " + formatDuration(totalStudyTime));
+
+        if (studyTimeBySubject.isEmpty()) {
+
+            System.out.println();
+            System.out.println("No study sessions found in this period.");
+
+            return;
+        }
+
+        System.out.println();
+        System.out.println(
+                "===== BY SUBJECT ====="
+        );
+
+        for (Map.Entry<String, Duration> entry : studyTimeBySubject.entrySet()) {
+
+            System.out.println(entry.getKey() + ": " + formatDuration(entry.getValue()));
+        }
+
+    } catch (IOException e) {
+
+        System.out.println(
+                "Unable to load study sessions: "
+                        + e.getMessage()
+        );
+    }
+}
+
+    private LocalDate getDate(String prompt) {
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        while (true) {
+
+            System.out.print(prompt);
+
+            String input = scanner.nextLine().trim();
+
+            try {
+                return LocalDate.parse(input, formatter);
+
+            } catch (DateTimeParseException e) {
+
+                System.out.println(
+                        "Invalid date format. " + "Please use DD-MM-YYYY."
+                );
+            }
         }
     }
 

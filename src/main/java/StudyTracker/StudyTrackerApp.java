@@ -2,6 +2,7 @@ package studytracker;
 
 import java.nio.file.Path;
 
+import studytracker.controller.StatisticsController;
 import studytracker.controller.SubjectController;
 import studytracker.controller.TimerController;
 import studytracker.model.StudyTimer;
@@ -26,8 +27,10 @@ public class StudyTrackerApp {
 
         SubjectController subjectController = new SubjectController(subjectStorage);
 
+        StatisticsController statisticsController = new StatisticsController(studySessionStorage);
+
         // Create the user interface
-        ConsoleUI consoleUI = new ConsoleUI(timerController, subjectController);
+        ConsoleUI consoleUI = new ConsoleUI(timerController, subjectController, statisticsController);
 
         // Start the application
         consoleUI.run();
