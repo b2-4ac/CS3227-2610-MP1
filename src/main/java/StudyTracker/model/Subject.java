@@ -1,5 +1,7 @@
 package studytracker.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Represents a Subject that a user is currently studying
  */
@@ -7,11 +9,7 @@ public class Subject {
     
     private String name;
 
-    // Empty Constructor for Jackson
-    public Subject() {
-    }
-
-    public Subject(String name) {
+    public Subject(@JsonProperty("name") String name) {
         this.name = name;
     }
 

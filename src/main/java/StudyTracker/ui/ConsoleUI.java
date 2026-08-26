@@ -8,42 +8,113 @@ import java.util.Scanner;
 import studytracker.controller.TimerController;
 import studytracker.model.StudySession;
 import studytracker.model.Subject;
+import studytracker.controller.SubjectController;
 import studytracker.model.TimerState;
 
 public class ConsoleUI {
 
     private final Scanner scanner;
     private final TimerController timerController;
+    private final SubjectController subjectController;
 
-    public ConsoleUI(TimerController timerController) {
+    public ConsoleUI(TimerController timerController, SubjectController subjectController) {
         this.scanner = new Scanner(System.in);
         this.timerController = timerController;
+        this.subjectController = subjectController;
     }
 
     public void run() {
-        boolean running = true;
+        boolean isAppRunning = true;
 
         displayWelcome();
 
-        while (running) {
+        while (isAppRunning) {
             displayMenu();
 
             int choice = getMenuChoice();
+            TimerState state = timerController.getState();
 
             switch (choice) {
-                case 1 -> startStudySession();
-                case 2 -> stopStudySession();
-                case 3 -> displayTimerStatus();
-                case 4 -> viewPastSessions();
-                case 5 -> {
-                    System.out.println("Goodbye!");
-                    running = false;
+            case 1:
+                if (state == TimerState.RUNNING) {
+                    pauseStudySession();
+
+                } else if (state == TimerState.PAUSED) {
+                    resumeStudySession();
+
+                } else {
+                    startStudySession();
                 }
-                default -> System.out.println("Invalid option.");
+                break;
+
+            case 2:
+                if (state != TimerState.NOT_STARTED) {
+                    stopStudySession();
+                } else {
+                    System.out.println("Invalid option.");
+                }
+                break;
+
+            case 3:
+                displayTimerStatus();
+                break;
+
+            case 4:
+                viewPastSessions();
+                break;
+
+            case 5:
+                manageSubjects();
+                break;
+
+            case 6:
+                isAppRunning = false;
+                break;
+
+            default:
+                System.out.println("Invalid option.");
             }
         }
 
         scanner.close();
+    }
+
+    private void manageSubjects() {
+
+        boolean managing = true;
+
+        while (managing) {
+
+            System.out.println();
+            System.out.println("===== MANAGE SUBJECTS =====");
+            System.out.println("1. View Subjects");
+            System.out.println("2. Add Subject");
+            System.out.println("3. Delete Subject");
+            System.out.println("4. Back");
+
+            int choice = getMenuChoice();
+
+            switch (choice) {
+            case 1:
+                displaySubjects();
+                break;
+
+            case 2:
+                addSubject();
+                break;
+
+            case 3:
+                deleteSubject();
+                break;
+
+            case 4:
+                managing = false;
+                break;
+
+            default:
+                System.out.println("Invalid option.");
+            }
+        }
     }
 
     private void displayWelcome() {
@@ -54,11 +125,30 @@ public class ConsoleUI {
 
     private void displayMenu() {
         System.out.println();
-        System.out.println("1. Start Study Session");
-        System.out.println("2. Stop Study Session");
+
+        TimerState state = timerController.getState();
+
+        switch (state) {
+
+            case NOT_STARTED:
+                System.out.println("1. Start Study Session");
+                break;
+
+            case RUNNING:
+                System.out.println("1. Pause Study Session");
+                System.out.println("2. Stop Study Session");
+                break;
+
+            case PAUSED:
+                System.out.println("1. Resume Study Session");
+                System.out.println("2. Stop Study Session");
+                break;
+        }
+
         System.out.println("3. View Timer Status");
         System.out.println("4. View Past Sessions");
-        System.out.println("5. Exit");
+        System.out.println("5. Manage Subjects");
+        System.out.println("6. Exit");
     }
 
     private int getMenuChoice() {
@@ -71,23 +161,39 @@ public class ConsoleUI {
     }
 
     private void startStudySession() {
-        System.out.println();
-        System.out.print("Enter subject: ");
-
-        String subjectName = scanner.nextLine();
-
-        Subject subject = new Subject(subjectName);
-
         try {
-            timerController.startSession(subject);
+            List<Subject> subjects = subjectController.getSubjects();
+
+            if (subjects.isEmpty()) {
+                System.out.println("You have not added any subjects yet.");
+                System.out.println("Please add a subject first.");
+                return;
+            }
 
             System.out.println();
-            System.out.println("Study session started!");
-            System.out.println("Subject: " + subjectName);
+            System.out.println("===== SELECT SUBJECT =====");
 
-        } catch (IllegalStateException e) {
-            System.out.println();
-            System.out.println("Unable to start session: " + e.getMessage());
+            for (int i = 0; i < subjects.size(); i++) {
+                System.out.println(
+                        (i + 1) + ". " + subjects.get(i).getName());
+            }
+
+            int choice = getMenuChoice();
+
+            int index = choice - 1;
+            if (index < 0 || index >= subjects.size()) {
+                System.out.println("Invalid subject selection.");
+                return;
+            }
+
+            Subject selectedSubject = subjects.get(index);
+
+            timerController.startSession(selectedSubject);
+
+            System.out.println("Started study session for: " + selectedSubject.getName());
+
+        } catch (IOException e) {
+            System.out.println("Unable to load subjects: " + e.getMessage());
         }
     }
 
@@ -106,6 +212,24 @@ public class ConsoleUI {
             System.out.println();
             System.out.println("An error has occured while saving the session: " + e.getMessage());
 
+        }
+    }
+
+    private void pauseStudySession() {
+        try {
+            timerController.pauseSession();
+            System.out.println("The session has been paused.");
+        } catch (IllegalStateException e) {
+            System.out.println("Unable to pause session: " + e.getMessage());
+        }
+    }
+
+    private void resumeStudySession() {
+        try {
+            timerController.resumeSession();
+            System.out.println("The session has resumed.");
+        } catch (IllegalStateException e) {
+            System.out.println("Unable to resume session: " + e.getMessage());
         }
     }
 
@@ -154,6 +278,77 @@ public class ConsoleUI {
 
         } catch (IOException e) {
             System.out.println("Unable to load past sessions: " + e.getMessage());
+        }
+    }
+
+    private void displaySubjects() {
+
+        try {
+
+            List<Subject> subjects = subjectController.getSubjects();
+
+            if (subjects.isEmpty()) {
+                System.out.println("No subjects have been added.");
+                return;
+            }
+
+            System.out.println();
+            System.out.println("===== YOUR SUBJECTS =====");
+
+            for (int i = 0; i < subjects.size(); i++) {
+                System.out.println((i + 1) + ". " + subjects.get(i).getName());
+            }
+
+        } catch (IOException e) {
+            System.out.println("Unable to load subjects: " + e.getMessage());
+        }
+    }
+
+    private void addSubject() {
+
+        System.out.print("Enter subject name: ");
+
+        String name = scanner.nextLine();
+
+        try {
+            subjectController.addSubject(name);
+            System.out.println("Subject added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid subject: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Unable to save subject: " + e.getMessage());
+        }
+    }
+
+    private void deleteSubject() {
+
+        try {
+            List<Subject> subjects = subjectController.getSubjects();
+
+            if (subjects.isEmpty()) {
+                System.out.println("No subjects to delete.");
+                return;
+            }
+
+            displaySubjects();
+
+            System.out.print("Enter subject number to delete: ");
+
+            int choice = getMenuChoice();
+
+            boolean deleted = subjectController.deleteSubject(choice - 1);
+
+            if (deleted) {
+                System.out.println(
+                        "Subject deleted successfully.");
+
+            } else {
+                System.out.println(
+                        "Invalid subject number.");
+            }
+
+        } catch (IOException e) {
+            System.out.println("Unable to delete subject: " + e.getMessage());
         }
     }
 

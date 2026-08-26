@@ -2,9 +2,11 @@ package studytracker;
 
 import java.nio.file.Path;
 
+import studytracker.controller.SubjectController;
 import studytracker.controller.TimerController;
 import studytracker.model.StudyTimer;
 import studytracker.storage.StudySessionStorage;
+import studytracker.storage.SubjectStorage;
 import studytracker.ui.ConsoleUI;
 
 public class StudyTrackerApp {
@@ -15,13 +17,17 @@ public class StudyTrackerApp {
         StudyTimer timer = new StudyTimer();
 
         // Create Storage Object
-        StudySessionStorage storage = new StudySessionStorage(Path.of("data", "sessions.json"));
+        StudySessionStorage studySessionStorage = new StudySessionStorage(Path.of("data", "sessions.json"));
+
+        SubjectStorage subjectStorage = new SubjectStorage(Path.of("data", "subjects.json"));
 
         // Create the controller
-        TimerController timerController = new TimerController(timer, storage);
+        TimerController timerController = new TimerController(timer, studySessionStorage);
+
+        SubjectController subjectController = new SubjectController(subjectStorage);
 
         // Create the user interface
-        ConsoleUI consoleUI = new ConsoleUI(timerController);
+        ConsoleUI consoleUI = new ConsoleUI(timerController, subjectController);
 
         // Start the application
         consoleUI.run();
