@@ -54,7 +54,14 @@ class SubjectStorageTest {
         SubjectStorage storage = new SubjectStorage(fixturePath("subjects.json"));
 
         assertEquals(
-                List.of("Computer Science", "Mathematics", "Physics", "History", "Literature", "Japanese"),
+                List.of(
+                        "Computer Science",
+                        "Mathematics",
+                        "Physics",
+                        "History",
+                        "Literature",
+                        "Japanese",
+                        "Subject To Delete"),
                 storage.loadAll().stream().map(Subject::getName).toList());
     }
 

@@ -1,120 +1,63 @@
 package studytracker.model;
 
-import org.junit.jupiter.api.Test;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class StudySessionTest {
 
     private final Subject subject = new Subject("Computer Science");
-
-    private final LocalDateTime startTime = LocalDateTime.of(2026, 8, 25, 14, 0);
-
-    private final LocalDateTime endTime = LocalDateTime.of(2026, 8, 25, 15, 0);
-
-    private final Duration duration = Duration.ofHours(1);
+    private final StudyInterval firstInterval = new StudyInterval(
+            LocalDateTime.of(2026, 8, 25, 14, 0),
+            LocalDateTime.of(2026, 8, 25, 14, 30));
+    private final StudyInterval secondInterval = new StudyInterval(
+            LocalDateTime.of(2026, 8, 25, 14, 45),
+            LocalDateTime.of(2026, 8, 25, 15, 30));
 
     @Test
     void constructorRejectsNullSubject() {
-        assertThrows(
-                NullPointerException.class,
-                () -> new StudySession(
-                        null,
-                        startTime,
-                        endTime,
-                        duration));
+        assertThrows(NullPointerException.class, () -> new StudySession(null, List.of(firstInterval)));
     }
 
     @Test
-    void constructorRejectsNullStartTime() {
-        assertThrows(
-                NullPointerException.class,
-                () -> new StudySession(
-                        subject,
-                        null,
-                        endTime,
-                        duration));
+    void constructorRejectsNullIntervals() {
+        assertThrows(NullPointerException.class, () -> new StudySession(subject, null));
     }
 
     @Test
-    void constructorRejectsNullEndTime() {
-        assertThrows(
-                NullPointerException.class,
-                () -> new StudySession(
-                        subject,
-                        startTime,
-                        null,
-                        duration));
+    void constructorRejectsEmptyIntervals() {
+        assertThrows(IllegalArgumentException.class, () -> new StudySession(subject, List.of()));
     }
 
     @Test
-    void constructorRejectsNullDuration() {
-        assertThrows(
-                NullPointerException.class,
-                () -> new StudySession(
-                        subject,
-                        startTime,
-                        endTime,
-                        null));
+    void gettersDeriveSessionValuesFromIntervals() {
+        StudySession session = new StudySession(subject, List.of(firstInterval, secondInterval));
+
+        assertAll(
+                () -> assertSame(subject, session.getSubject()),
+                () -> assertEquals(List.of(firstInterval, secondInterval), session.getIntervals()),
+                () -> assertEquals(firstInterval.getStartTime(), session.getStartTime()),
+                () -> assertEquals(secondInterval.getEndTime(), session.getEndTime()),
+                () -> assertEquals(Duration.ofMinutes(75), session.getDuration()));
     }
 
     @Test
-    void constructorRejectsEndTimeBeforeStartTime() {
+    void derivedTimesUseEarliestStartAndLatestEnd() {
+        StudySession session = new StudySession(subject, List.of(secondInterval, firstInterval));
 
-        LocalDateTime invalidEndTime = LocalDateTime.of(2026, 8, 25, 13, 0);
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new StudySession(
-                        subject,
-                        startTime,
-                        invalidEndTime,
-                        duration));
+        assertAll(
+                () -> assertEquals(firstInterval.getStartTime(), session.getStartTime()),
+                () -> assertEquals(secondInterval.getEndTime(), session.getEndTime()));
     }
 
     @Test
-    void constructorAllowsEndTimeEqualToStartTime() {
+    void intervalsCannotBeModifiedThroughGetter() {
+        StudySession session = new StudySession(subject, List.of(firstInterval));
 
-        LocalDateTime equalEndTime = startTime;
-
-        assertDoesNotThrow(
-                () -> new StudySession(
-                        subject,
-                        startTime,
-                        equalEndTime,
-                        Duration.ZERO));
-    }
-
-    @Test
-    void constructorAllowsValidSession() {
-
-        assertDoesNotThrow(
-                () -> new StudySession(
-                        subject,
-                        startTime,
-                        endTime,
-                        duration));
-    }
-
-    @Test
-    void gettersReturnValuesSuppliedToConstructor() {
-        StudySession session = new StudySession(subject, startTime, endTime, duration);
-
-        assertSame(subject, session.getSubject());
-        assertEquals(startTime, session.getStartTime());
-        assertEquals(endTime, session.getEndTime());
-        assertEquals(duration, session.getDuration());
-    }
-
-    @Test
-    void constructorRejectsEndTimeOneNanosecondBeforeStartTime() {
-        LocalDateTime justBeforeStart = startTime.minusNanos(1);
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new StudySession(subject, startTime, justBeforeStart, Duration.ZERO));
+        assertThrows(UnsupportedOperationException.class, () -> session.getIntervals().add(secondInterval));
     }
 }

@@ -113,6 +113,7 @@ class StudyTimerTest {
 
         assertAll(
                 () -> assertSame(subject, session.getSubject()),
+                () -> assertEquals(1, session.getIntervals().size()),
                 () -> assertFalse(session.getDuration().isNegative()),
                 () -> assertEquals(TimerState.NOT_STARTED, timer.getState()),
                 () -> assertNull(timer.getSubject()),
@@ -132,6 +133,28 @@ class StudyTimerTest {
         assertAll(
                 () -> assertEquals(elapsedWhenPaused, session.getDuration()),
                 () -> assertEquals(TimerState.NOT_STARTED, timer.getState()));
+    }
+
+    @Test
+    void stopAfterResumeStoresEachActiveRunAsAnInterval() throws InterruptedException {
+        StudyTimer timer = startedTimer();
+        Thread.sleep(10);
+        timer.pause();
+        timer.resume();
+        Thread.sleep(10);
+
+        StudySession session = timer.stop();
+
+        assertAll(
+                () -> assertEquals(2, session.getIntervals().size()),
+                () -> assertEquals(
+                        session.getDuration(),
+                        Duration.between(
+                                session.getIntervals().get(0).getStartTime(),
+                                session.getIntervals().get(0).getEndTime())
+                                .plus(Duration.between(
+                                        session.getIntervals().get(1).getStartTime(),
+                                        session.getIntervals().get(1).getEndTime()))));
     }
 
     @Test
