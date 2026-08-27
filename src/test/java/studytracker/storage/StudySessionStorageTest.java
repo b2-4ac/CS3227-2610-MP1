@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import studytracker.model.StudySession;
+import studytracker.model.StudyInterval;
 import studytracker.model.Subject;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,9 +77,7 @@ class StudySessionStorageTest {
         LocalDateTime start = LocalDateTime.of(2026, 8, 26, startHour, 0);
         return new StudySession(
                 new Subject(subjectName),
-                start,
-                start.plus(duration),
-                duration);
+                List.of(new StudyInterval(start, start.plus(duration))));
     }
 
     private Path fixturePath(String fileName) throws URISyntaxException {
@@ -90,6 +89,16 @@ class StudySessionStorageTest {
                 () -> assertEquals(expected.getSubject().getName(), actual.getSubject().getName()),
                 () -> assertEquals(expected.getStartTime(), actual.getStartTime()),
                 () -> assertEquals(expected.getEndTime(), actual.getEndTime()),
-                () -> assertEquals(expected.getDuration(), actual.getDuration()));
+                () -> assertEquals(expected.getDuration(), actual.getDuration()),
+                () -> assertEquals(expected.getIntervals().size(), actual.getIntervals().size()));
+
+        for (int index = 0; index < expected.getIntervals().size(); index++) {
+            StudyInterval expectedInterval = expected.getIntervals().get(index);
+            StudyInterval actualInterval = actual.getIntervals().get(index);
+
+            assertAll(
+                    () -> assertEquals(expectedInterval.getStartTime(), actualInterval.getStartTime()),
+                    () -> assertEquals(expectedInterval.getEndTime(), actualInterval.getEndTime()));
+        }
     }
 }

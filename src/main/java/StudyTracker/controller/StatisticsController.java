@@ -1,11 +1,13 @@
 package studytracker.controller;
 
+import studytracker.model.StudyInterval;
 import studytracker.model.StudySession;
 import studytracker.storage.StudySessionStorage;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,24 +22,8 @@ public class StatisticsController {
     
     public Duration getTotalStudyTime(LocalDate startDate, LocalDate endDate) throws IOException {
 
-        Duration total = Duration.ZERO;
-
-        List<StudySession> sessions = retrieveSessions();
-
-        for (StudySession session : sessions) {
-
-            LocalDate sessionDate = session.getStartTime().toLocalDate();
-
-            boolean isWithinRange = !sessionDate.isBefore(startDate) && !sessionDate.isAfter(endDate);
-
-            if (!isWithinRange) {
-                continue;
-            }
-
-            total = total.plus(session.getDuration());
-        }
-
-        return total;
+        return getStudyTimeBySubject(startDate, endDate).values().stream()
+                .reduce(Duration.ZERO, Duration::plus);
     }
 
     public Map<String, Duration> getStudyTimeBySubject(LocalDate startDate, LocalDate endDate) throws IOException {
@@ -48,19 +34,14 @@ public class StatisticsController {
 
         for (StudySession session : sessions) {
 
-            LocalDate sessionDate = session.getStartTime().toLocalDate();
-
-            boolean isWithinRange = !sessionDate.isBefore(startDate) && !sessionDate.isAfter(endDate);
-
-            if (!isWithinRange) {
-                continue;
-            }
-
             String subjectName = session.getSubject().getName();
-            Duration currentDuration = studyTimeBySubject.getOrDefault(subjectName, Duration.ZERO);
-            Duration updatedDuration = currentDuration.plus(session.getDuration());
-
-            studyTimeBySubject.put(subjectName, updatedDuration);
+            for (StudyInterval interval : session.getIntervals()) {
+                Duration overlap = getOverlap(interval, startDate, endDate);
+                if (!overlap.isZero()) {
+                    Duration currentDuration = studyTimeBySubject.getOrDefault(subjectName, Duration.ZERO);
+                    studyTimeBySubject.put(subjectName, currentDuration.plus(overlap));
+                }
+            }
         }
 
         return studyTimeBySubject;
@@ -68,6 +49,22 @@ public class StatisticsController {
 
     private List<StudySession> retrieveSessions() throws IOException {
         return storage.loadAll();
+    }
+
+    private Duration getOverlap(StudyInterval interval, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime rangeStart = startDate.atStartOfDay();
+        LocalDateTime rangeEnd = endDate.plusDays(1).atStartOfDay();
+
+        LocalDateTime overlapStart = interval.getStartTime().isAfter(rangeStart)
+                ? interval.getStartTime()
+                : rangeStart;
+        LocalDateTime overlapEnd = interval.getEndTime().isBefore(rangeEnd)
+                ? interval.getEndTime()
+                : rangeEnd;
+
+        return overlapEnd.isAfter(overlapStart)
+                ? Duration.between(overlapStart, overlapEnd)
+                : Duration.ZERO;
     }
 
 }

@@ -1,98 +1,69 @@
 [
   {
     "subject": { "name": "Computer Science" },
-    "startTime": [2024, 2, 29, 9, 0, 0, 0],
-    "endTime": [2024, 2, 29, 10, 30, 0, 0],
-    "duration": 5400.000000000
+    "intervals": [{ "startTime": [2024, 2, 29, 9, 0, 0, 0], "endTime": [2024, 2, 29, 10, 30, 0, 0] }]
   },
   {
     "subject": { "name": "History" },
-    "startTime": [2025, 12, 31, 14, 0, 0, 0],
-    "endTime": [2025, 12, 31, 14, 45, 0, 0],
-    "duration": 2700.000000000
+    "intervals": [{ "startTime": [2025, 12, 31, 14, 0, 0, 0], "endTime": [2025, 12, 31, 14, 45, 0, 0] }]
   },
   {
     "subject": { "name": "Computer Science" },
-    "startTime": [2026, 1, 1, 9, 0, 0, 0],
-    "endTime": [2026, 1, 1, 10, 0, 0, 0],
-    "duration": 3600.000000000
+    "intervals": [{ "startTime": [2026, 1, 1, 9, 0, 0, 0], "endTime": [2026, 1, 1, 10, 0, 0, 0] }]
   },
   {
     "subject": { "name": "Mathematics" },
-    "startTime": [2026, 1, 15, 13, 0, 0, 0],
-    "endTime": [2026, 1, 15, 15, 0, 0, 0],
-    "duration": 7200.000000000
+    "intervals": [{ "startTime": [2026, 1, 15, 13, 0, 0, 0], "endTime": [2026, 1, 15, 15, 0, 0, 0] }]
   },
   {
     "subject": { "name": "Physics" },
-    "startTime": [2026, 2, 28, 16, 0, 0, 0],
-    "endTime": [2026, 2, 28, 17, 15, 0, 0],
-    "duration": 4500.000000000
+    "intervals": [{ "startTime": [2026, 2, 28, 16, 0, 0, 0], "endTime": [2026, 2, 28, 17, 15, 0, 0] }]
   },
   {
     "subject": { "name": "Computer Science" },
-    "startTime": [2026, 3, 1, 8, 30, 0, 0],
-    "endTime": [2026, 3, 1, 9, 0, 0, 0],
-    "duration": 1800.000000000
+    "intervals": [{ "startTime": [2026, 3, 1, 8, 30, 0, 0], "endTime": [2026, 3, 1, 9, 0, 0, 0] }]
   },
   {
     "subject": { "name": "Computer Science" },
-    "startTime": [2026, 6, 15, 9, 0, 0, 0],
-    "endTime": [2026, 6, 15, 10, 0, 0, 0],
-    "duration": 3600.000000000
+    "intervals": [{ "startTime": [2026, 6, 15, 9, 0, 0, 0], "endTime": [2026, 6, 15, 10, 0, 0, 0] }]
   },
   {
     "subject": { "name": "Mathematics" },
-    "startTime": [2026, 6, 15, 14, 0, 0, 0],
-    "endTime": [2026, 6, 15, 15, 45, 0, 0],
-    "duration": 6300.000000000
+    "intervals": [{ "startTime": [2026, 6, 15, 14, 0, 0, 0], "endTime": [2026, 6, 15, 15, 45, 0, 0] }]
   },
   {
     "subject": { "name": "Literature" },
-    "startTime": [2026, 8, 1, 10, 0, 0, 0],
-    "endTime": [2026, 8, 1, 12, 0, 0, 0],
-    "duration": 7200.000000000
+    "intervals": [{ "startTime": [2026, 8, 1, 10, 0, 0, 0], "endTime": [2026, 8, 1, 12, 0, 0, 0] }]
   },
   {
     "subject": { "name": "Computer Science" },
-    "startTime": [2026, 8, 26, 9, 0, 0, 0],
-    "endTime": [2026, 8, 26, 10, 30, 0, 0],
-    "duration": 5400.000000000
+    "intervals": [{ "startTime": [2026, 8, 26, 9, 0, 0, 0], "endTime": [2026, 8, 26, 10, 30, 0, 0] }]
   },
   {
     "subject": { "name": "Physics" },
-    "startTime": [2026, 8, 26, 13, 0, 0, 0],
-    "endTime": [2026, 8, 26, 15, 0, 0, 0],
-    "duration": 7200.000000000
+    "intervals": [{ "startTime": [2026, 8, 26, 13, 0, 0, 0], "endTime": [2026, 8, 26, 15, 0, 0, 0] }]
   },
   {
     "subject": { "name": "Mathematics" },
-    "startTime": [2026, 8, 27, 18, 0, 0, 0],
-    "endTime": [2026, 8, 27, 19, 0, 0, 0],
-    "duration": 3600.000000000
+    "intervals": [{ "startTime": [2026, 8, 27, 18, 0, 0, 0], "endTime": [2026, 8, 27, 19, 0, 0, 0] }]
   },
   {
     "subject": { "name": "Computer Science" },
-    "startTime": [2026, 8, 31, 20, 0, 0, 0],
-    "endTime": [2026, 8, 31, 20, 45, 0, 0],
-    "duration": 2700.000000000
+    "intervals": [{ "startTime": [2026, 8, 31, 20, 0, 0, 0], "endTime": [2026, 8, 31, 20, 45, 0, 0] }]
   },
   {
     "subject": { "name": "Physics" },
-    "startTime": [2026, 9, 1, 9, 0, 0, 0],
-    "endTime": [2026, 9, 1, 12, 0, 0, 0],
-    "duration": 10800.000000000
+    "intervals": [{ "startTime": [2026, 9, 1, 9, 0, 0, 0], "endTime": [2026, 9, 1, 12, 0, 0, 0] }]
   },
   {
     "subject": { "name": "Literature" },
-    "startTime": [2026, 12, 31, 23, 30, 0, 0],
-    "endTime": [2027, 1, 1, 1, 0, 0, 0],
-    "duration": 5400.000000000
+    "intervals": [
+      { "startTime": [2026, 12, 31, 23, 30, 0, 0], "endTime": [2026, 12, 31, 23, 45, 0, 0] },
+      { "startTime": [2027, 1, 1, 0, 30, 0, 0], "endTime": [2027, 1, 1, 1, 0, 0, 0] }
+    ]
   },
   {
     "subject": { "name": "History" },
-    "startTime": [2027, 1, 1, 10, 0, 0, 0],
-    "endTime": [2027, 1, 1, 10, 30, 0, 0],
-    "duration": 1800.000000000
+    "intervals": [{ "startTime": [2027, 1, 1, 10, 0, 0, 0], "endTime": [2027, 1, 1, 10, 30, 0, 0] }]
   }
 ]

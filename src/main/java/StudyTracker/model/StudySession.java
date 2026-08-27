@@ -2,8 +2,11 @@ package studytracker.model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -12,22 +15,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class StudySession {
 
     private Subject subject;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private Duration duration;
+    private List<StudyInterval> intervals;
 
     public StudySession(
             @JsonProperty("subject") Subject subject,
-            @JsonProperty("startTime") LocalDateTime startTime,
-            @JsonProperty("endTime") LocalDateTime endTime,
-            @JsonProperty("duration") Duration duration) {
+            @JsonProperty("intervals") List<StudyInterval> intervals) {
         this.subject = Objects.requireNonNull(subject, "Subject cannot be null");
-        this.startTime = Objects.requireNonNull(startTime, "Start Time cannot be null");
-        this.endTime = Objects.requireNonNull(endTime, "End Time cannot be null");
-        this.duration = Objects.requireNonNull(duration, "Elapsed Time cannot be null");
+        this.intervals = List.copyOf(Objects.requireNonNull(intervals, "Intervals cannot be null"));
 
-        if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("End Time cannot be before Start Time");
+        if (this.intervals.isEmpty()) {
+            throw new IllegalArgumentException("A session must contain at least one study interval");
         }
     }
 
@@ -35,15 +32,30 @@ public class StudySession {
         return this.subject;
     }
 
+    @JsonIgnore
     public LocalDateTime getStartTime() {
-        return this.startTime;
+        return intervals.stream()
+                .map(StudyInterval::getStartTime)
+                .min(Comparator.naturalOrder())
+                .orElseThrow();
     }
 
+    @JsonIgnore
     public LocalDateTime getEndTime() {
-        return this.endTime;
+        return intervals.stream()
+                .map(StudyInterval::getEndTime)
+                .max(Comparator.naturalOrder())
+                .orElseThrow();
     }
 
+    @JsonIgnore
     public Duration getDuration() {
-        return this.duration;
+        return intervals.stream()
+                .map(interval -> Duration.between(interval.getStartTime(), interval.getEndTime()))
+                .reduce(Duration.ZERO, Duration::plus);
+    }
+
+    public List<StudyInterval> getIntervals() {
+        return intervals;
     }
 }

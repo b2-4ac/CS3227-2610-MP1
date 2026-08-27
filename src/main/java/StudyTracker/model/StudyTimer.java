@@ -2,24 +2,23 @@ package studytracker.model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudyTimer {
 
     private TimerState state;
     private Subject subject;
 
-    // When the overall study session began
-    private LocalDateTime sessionStartTime;
-
     // When the current uninterrupted period of studying began
     private LocalDateTime currentRunStartTime;
 
-    // Total study time accumulated before the current run
-    private Duration elapsedTime;
+    // Completed uninterrupted periods of studying in the current session
+    private List<StudyInterval> intervals;
 
     public StudyTimer() {
         state = TimerState.NOT_STARTED;
-        elapsedTime = Duration.ZERO;
+        intervals = new ArrayList<>();
     }
 
     /**
@@ -33,9 +32,8 @@ public class StudyTimer {
         }
 
         this.subject = subject;
-        this.sessionStartTime = LocalDateTime.now();
-        this.currentRunStartTime = sessionStartTime;
-        this.elapsedTime = Duration.ZERO;
+        this.currentRunStartTime = LocalDateTime.now();
+        this.intervals.clear();
         this.state = TimerState.RUNNING;
     }
 
@@ -49,9 +47,10 @@ public class StudyTimer {
 
         LocalDateTime now = LocalDateTime.now();
 
-        elapsedTime = elapsedTime.plus(Duration.between(currentRunStartTime, now));
+        intervals.add(new StudyInterval(currentRunStartTime, now));
 
         state = TimerState.PAUSED;
+        currentRunStartTime = null;
     }
 
     /**
@@ -77,20 +76,13 @@ public class StudyTimer {
             throw new IllegalStateException("Timer has not been started");
         }
 
-        // If currently running, add the final run
         if (state == TimerState.RUNNING) {
-            LocalDateTime now = LocalDateTime.now();
-
-            elapsedTime = elapsedTime.plus(Duration.between(currentRunStartTime, now));
+            addCurrentRunToIntervals();
         }
-
-        LocalDateTime endTime = LocalDateTime.now();
 
         StudySession session = new StudySession(
                 subject,
-                sessionStartTime,
-                endTime,
-                elapsedTime);
+                intervals);
 
         reset();
 
@@ -98,14 +90,15 @@ public class StudyTimer {
     }
 
     public Duration getElapsedTime() {
+        Duration completedDuration = intervals.stream()
+                .map(interval -> Duration.between(interval.getStartTime(), interval.getEndTime()))
+                .reduce(Duration.ZERO, Duration::plus);
+
         if (state == TimerState.RUNNING) {
-            return elapsedTime.plus(
-                    Duration.between(
-                            currentRunStartTime,
-                            LocalDateTime.now()));
+            return completedDuration.plus(Duration.between(currentRunStartTime, LocalDateTime.now()));
         }
 
-        return elapsedTime;
+        return completedDuration;
     }
 
     public TimerState getState() {
@@ -122,8 +115,13 @@ public class StudyTimer {
     public void reset() {
         state = TimerState.NOT_STARTED;
         subject = null;
-        sessionStartTime = null;
         currentRunStartTime = null;
-        elapsedTime = Duration.ZERO;
+        intervals.clear();
+    }
+
+    private void addCurrentRunToIntervals() {
+        LocalDateTime now = LocalDateTime.now();
+        intervals.add(new StudyInterval(currentRunStartTime, now));
+        currentRunStartTime = null;
     }
 }
