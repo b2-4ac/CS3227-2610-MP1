@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StudySessionTest {
 
@@ -21,7 +20,7 @@ class StudySessionTest {
     @Test
     void constructorRejectsNullSubject() {
         assertThrows(
-                IllegalArgumentException.class,
+                NullPointerException.class,
                 () -> new StudySession(
                         null,
                         startTime,
@@ -32,7 +31,7 @@ class StudySessionTest {
     @Test
     void constructorRejectsNullStartTime() {
         assertThrows(
-                IllegalArgumentException.class,
+                NullPointerException.class,
                 () -> new StudySession(
                         subject,
                         null,
@@ -43,7 +42,7 @@ class StudySessionTest {
     @Test
     void constructorRejectsNullEndTime() {
         assertThrows(
-                IllegalArgumentException.class,
+                NullPointerException.class,
                 () -> new StudySession(
                         subject,
                         startTime,
@@ -54,7 +53,7 @@ class StudySessionTest {
     @Test
     void constructorRejectsNullDuration() {
         assertThrows(
-                IllegalArgumentException.class,
+                NullPointerException.class,
                 () -> new StudySession(
                         subject,
                         startTime,
@@ -98,5 +97,24 @@ class StudySessionTest {
                         startTime,
                         endTime,
                         duration));
+    }
+
+    @Test
+    void gettersReturnValuesSuppliedToConstructor() {
+        StudySession session = new StudySession(subject, startTime, endTime, duration);
+
+        assertSame(subject, session.getSubject());
+        assertEquals(startTime, session.getStartTime());
+        assertEquals(endTime, session.getEndTime());
+        assertEquals(duration, session.getDuration());
+    }
+
+    @Test
+    void constructorRejectsEndTimeOneNanosecondBeforeStartTime() {
+        LocalDateTime justBeforeStart = startTime.minusNanos(1);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new StudySession(subject, startTime, justBeforeStart, Duration.ZERO));
     }
 }
