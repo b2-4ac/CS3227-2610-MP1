@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="22.0" styleClass="content-page" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="studytracker.ui.SessionViewController">
+    <padding>
+        <Insets bottom="32.0" left="32.0" right="32.0" top="30.0" />
+    </padding>
+    <children>
+        <VBox spacing="4.0">
+            <Label text="Sessions" styleClass="page-title" />
+            <Label text="Review completed sessions and the active time recorded in each one." styleClass="page-description" />
+        </VBox>
+        <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="filter-bar">
+            <children>
+                <VBox spacing="4.0">
+                    <Label text="From" styleClass="filter-label" />
+                    <DatePicker fx:id="sessionStartDatePicker" promptText="Start date" />
+                </VBox>
+                <VBox spacing="4.0">
+                    <Label text="To" styleClass="filter-label" />
+                    <DatePicker fx:id="sessionEndDatePicker" promptText="End date" />
+                </VBox>
+                <Button fx:id="applySessionFilterButton" mnemonicParsing="false" onAction="#applyFilter" text="Apply" styleClass="secondary-action" />
+                <Button fx:id="clearSessionFilterButton" mnemonicParsing="false" onAction="#clearFilter" text="Clear" styleClass="text-action" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="sessionCountLabel" text="0 sessions" styleClass="filter-result" />
+            </children>
+        </HBox>
+        <TableView fx:id="sessionsTable" styleClass="data-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="sessionSubjectColumn" prefWidth="190.0" text="Subject" />
+                <TableColumn fx:id="sessionStartColumn" prefWidth="220.0" text="Started" />
+                <TableColumn fx:id="sessionEndColumn" prefWidth="220.0" text="Ended" />
+                <TableColumn fx:id="sessionDurationColumn" prefWidth="150.0" text="Active time" />
+            </columns>
+            <placeholder>
+                <Label text="No sessions match the selected date range." styleClass="table-placeholder" />
+            </placeholder>
+        </TableView>
+    </children>
+</VBox>

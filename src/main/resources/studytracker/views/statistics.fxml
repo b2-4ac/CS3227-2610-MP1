@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="22.0" styleClass="content-page" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="studytracker.ui.StatisticsViewController">
+    <padding>
+        <Insets bottom="32.0" left="32.0" right="32.0" top="30.0" />
+    </padding>
+    <children>
+        <VBox spacing="4.0">
+            <Label text="Statistics" styleClass="page-title" />
+            <Label text="Explore active study time by date range and subject." styleClass="page-description" />
+        </VBox>
+        <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="filter-bar">
+            <children>
+                <VBox spacing="4.0">
+                    <Label text="From" styleClass="filter-label" />
+                    <DatePicker fx:id="statisticsStartDatePicker" promptText="Start date" />
+                </VBox>
+                <VBox spacing="4.0">
+                    <Label text="To" styleClass="filter-label" />
+                    <DatePicker fx:id="statisticsEndDatePicker" promptText="End date" />
+                </VBox>
+                <Button fx:id="applyStatisticsFilterButton" mnemonicParsing="false" onAction="#updateStatistics" text="Update statistics" styleClass="primary-action" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="currentWeekButton" mnemonicParsing="false" onAction="#showCurrentWeek" text="This week" styleClass="text-action" />
+            </children>
+        </HBox>
+        <GridPane hgap="16.0" vgap="16.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+            </columnConstraints>
+            <children>
+                <VBox spacing="5.0" styleClass="summary-card" GridPane.columnIndex="0">
+                    <Label text="TOTAL ACTIVE STUDY TIME" styleClass="eyebrow" />
+                    <Label fx:id="statisticsTotalTimeLabel" text="0 h 0 m" styleClass="summary-value" />
+                    <Label text="For the selected period" styleClass="summary-caption" />
+                </VBox>
+                <VBox spacing="5.0" styleClass="summary-card" GridPane.columnIndex="1">
+                    <Label text="SUBJECTS WITH ACTIVITY" styleClass="eyebrow" />
+                    <Label fx:id="statisticsSubjectCountLabel" text="0" styleClass="summary-value" />
+                    <Label text="Only active intervals are counted" styleClass="summary-caption" />
+                </VBox>
+            </children>
+        </GridPane>
+        <VBox spacing="10.0" styleClass="section-card" VBox.vgrow="ALWAYS">
+            <VBox spacing="3.0">
+                <Label text="Study time by subject" styleClass="section-title" />
+                <Label text="Intervals spanning midnight are attributed to the dates where the active study occurred." styleClass="section-description" />
+            </VBox>
+            <BarChart fx:id="studyTimeBySubjectChart" animated="false" legendVisible="false" styleClass="statistics-chart" VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis label="Subject" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Active minutes" />
+                </yAxis>
+            </BarChart>
+        </VBox>
+    </children>
+</VBox>
