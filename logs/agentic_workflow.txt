@@ -1,0 +1,44 @@
+DEVELOPMENT WORKFLOW SUMMARY
+1. Initial code and testing review
+The workflow began by reviewing the model-layer classes and identifying suitable JUnit tests. The discussion focused on boundary-value analysis, equivalence partitions, state transitions, and avoiding unreliable time-based tests. Existing tests were inspected and corrected where their expected exception types did not match the implementation.
+The next step was to create and add model tests for subjects, sessions, intervals, and timer behavior. Testing then expanded to storage classes, using temporary directories and JSON fixtures.
+2. Test-data-first approach
+Before statistics tests were written, JSON fixture data was designed separately. The fixtures intentionally covered multiple subjects, dates, months, years, leap-day data, empty-result periods, multiple sessions on one date, and cross-midnight study periods.
+This workflow made it possible to plan test coverage before implementing specific assertions. Later, the fixture schema had to be updated when session storage changed from a single duration to active intervals.
+3. Requirements discussion before redesign
+A major interaction involved identifying a correctness issue in statistics for sessions that cross midnight. The initial implementation classified an entire session by its start date, which omitted valid study time from the next day.
+The discussion considered whether to accept this limitation or redesign session storage. The final decision was to store active study intervals, because total duration could not be accurately split across dates when pauses were present.
+4. Incremental model and statistics redesign
+The redesign was implemented in stages:
+- introduce a StudyInterval model;
+- update StudySession to store intervals and derive start time, end time, and duration;
+- update StudyTimer to create intervals when pausing and stopping;
+- update JSON fixtures and sample data;
+- update StatisticsController to calculate interval overlap with a requested date range;
+- update related tests.
+Backward compatibility was discussed but intentionally excluded because the application was not considered to be in real use. During implementation, an existing sample sessions file was discovered and converted to the new schema.
+5. Review-driven test improvements
+Tests were not treated as final after being generated. A later review identified that a storage test compared only the number of intervals, rather than every interval’s start and end times. The assertion helper was corrected to compare interval details individually.
+This showed the value of manually reviewing generated tests for false positives, rather than relying only on broad coverage claims.
+6. Statistics and controller test expansion
+After the data model was stable, tests were added for statistics and subject management. The statistics tests covered date boundaries, empty periods, aggregation, paused cross-midnight sessions, and partial overlap of an active interval across midnight.
+Subject-controller tests covered normal operations, case-insensitive duplicate rejection, deletion, and invalid indices. A dedicated dummy subject was added to fixture data for deletion testing.
+7. GUI design exploration
+The workflow then shifted from backend functionality to interface design. Several possible layouts were proposed, and the balanced dashboard design was selected.
+Before code was written, the GUI was broken down into JavaFX components, FXML views, CSS, screen controllers, navigation responsibilities, and interactions with the existing application controllers.
+8. Staged JavaFX implementation
+The JavaFX work was deliberately divided into stages:
+- create FXML and CSS files without controllers;
+- add JavaFX dependencies to Gradle;
+- add UI controller classes;
+- update the main application entry point to launch JavaFX;
+- wire FXML actions and controller references;
+- refine defects found during runtime and visual inspection.
+This staged workflow made it easier to distinguish layout problems, build-configuration problems, and controller behavior problems.
+9. Runtime debugging and visual refinement
+Manual application launch revealed an FXML error involving VBox growth constraints. The problem was traced to a layout property attached to the wrong node and then corrected.
+Later, visual inspection identified two UI defects: session durations displayed without seconds, and unused space in the Subjects table. These were investigated by following the formatting and table-resize code, then fixed.
+This part of the workflow demonstrated that source review alone was insufficient for GUI validation; runtime testing and visual inspection were necessary.
+10. Documentation planning before writing
+The User Guide was first planned as an outline before being written. The outline was updated when the intended application distribution method changed from a Gradle development workflow to a downloadable JAR.
+The completed User Guide included quick-start instructions, feature descriptions, examples, data warnings, intended behavior, overnight-session explanations, and a feature summary. The FAQ was intentionally omitted.
