@@ -61,7 +61,8 @@ public class DashboardController {
                 new javafx.beans.property.ReadOnlyStringWrapper(
                         DATE_TIME_FORMATTER.format(cell.getValue().getEndTime())));
         recentSessionDurationColumn.setCellValueFactory(cell ->
-                new javafx.beans.property.ReadOnlyStringWrapper(UiSupport.formatShortDuration(cell.getValue().getDuration())));
+                new javafx.beans.property.ReadOnlyStringWrapper(UiSupport.formatDuration(cell.getValue().getDuration())));
+        recentSessionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
         timerRefreshTimeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(1), event -> refreshTimer()));
         timerRefreshTimeline.setCycleCount(Timeline.INDEFINITE);

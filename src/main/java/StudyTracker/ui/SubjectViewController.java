@@ -26,6 +26,7 @@ public class SubjectViewController {
     private void initialize() {
         subjectNameColumn.setCellValueFactory(cell ->
                 new ReadOnlyStringWrapper(cell.getValue().getName()));
+        subjectsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         subjectsTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldSelection, newSelection) ->
                         deleteSubjectButton.setDisable(newSelection == null));

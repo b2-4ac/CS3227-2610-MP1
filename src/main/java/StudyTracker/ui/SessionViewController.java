@@ -41,7 +41,7 @@ public class SessionViewController {
         sessionEndColumn.setCellValueFactory(cell ->
                 new ReadOnlyStringWrapper(DATE_TIME_FORMATTER.format(cell.getValue().getEndTime())));
         sessionDurationColumn.setCellValueFactory(cell ->
-                new ReadOnlyStringWrapper(UiSupport.formatShortDuration(cell.getValue().getDuration())));
+                new ReadOnlyStringWrapper(UiSupport.formatDuration(cell.getValue().getDuration())));
     }
 
     public void configure(TimerController timerController) {
