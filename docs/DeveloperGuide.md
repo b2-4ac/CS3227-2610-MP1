@@ -81,20 +81,6 @@ Calculates total active time and time by subject for inclusive date ranges using
 
 `SubjectStorage` reads and writes `subjects.json`. `StudySessionStorage` reads and appends `sessions.json`, configures Jackson Java-time support, and creates parent folders on save. Sessions persist their subject and active intervals. Model field, constructor, or JSON annotation changes should preserve this schema or provide a migration.
 
-## Noteworthy Features
-
-### Active Intervals
-
-Durations alone cannot show when a user studied around pauses. Every uninterrupted run is stored as a `StudyInterval`; `StudySession` derives start, end, and duration from intervals, preventing inconsistent duplicated data.
-
-### Overnight Statistics
-
-An inclusive user range is implemented as `[start date at 00:00, day after end date at 00:00)`. Each interval is clipped to this range. An interval from `23:00` to `00:30` therefore contributes 30 minutes to the second date; paused gaps are excluded.
-
-### Persistence and Lifecycle
-
-FXML creates screen controllers before `AppController` injects shared dependencies, preventing duplicate timers or storage instances. An active or paused timer is saved only when stopped, so closing the application loses that unfinished session.
-
 ## Testing
 
 Run the JUnit suite with `./gradlew test`, or `.\gradlew.bat test` on Windows. Tests are in `src/test/java/`; JSON fixtures are in `src/test/resources/studytracker/fixtures/`.
