@@ -60,7 +60,14 @@ I had wanted a functionality where the user would be able to view their own stat
 
 With the current implementation, since only the total study time is recorded, the session could show as having lasted 50 minutes, but I would have no way of knowing whether the 50 minutes lay entirely before 24/08/2026 00:00 or if it had some of it that was after 24/08/2026 00:00 which made data compilation difficult. Since this app was about allowing users to keep track of their study times, it would be unwise to provide incorrect information, and hence I decided that the implementation of both `StudySession` and `StudyTimer` had to change, keeping track of active intervals instead of only the total elapsed time.
 
-I brought this idea up to the LLM and it agreed with my assessment. At the end of the day, it was my understanding of test case design and Boundary Value Analysis that allowed me to spot this problem before it was too late in the development process, where more code might have made it harder to make changes.
+I brought this idea up to the LLM and it agreed with my assessment. I then took the process step by step: 
+ - Requesting for the code for the `StudyInterval` class
+ - Updating of `StudySession` to store the new `StudyInterval` objects
+ - Updating of `StudyTimer` to create `StudyInterval` objects
+ - Updating of `StatisticsController` to extract durations and overlaps from the `StudyInterval`s
+ - Updating of dummy test data in order to fit with the new implementation.
+
+At the end of the day, it was my understanding of test case design and Boundary Value Analysis that allowed me to spot this problem before it was too late in the development process, where more code might have made it harder to make changes.
 
 ## 3. Incorrect Test Case Implementation
 I had asked the LLM to generate some test cases for my Storage component, and for a few test cases it had created a helper function called `assertSessionEquals` which aimed to be a more concise way for the reader to know that the two `StudySession` objects were being compared to make sure the reconstructed `StudySession` had the accurate and correct attributes.
