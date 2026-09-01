@@ -25,11 +25,23 @@ public class StatisticsViewController {
 
     private StatisticsController statisticsController;
 
+    /**
+     * Supplies the controller used to calculate statistics and initially displays statistics for
+     * the current week.
+     *
+     * @param statisticsController the controller that provides aggregated study-time data
+     */
     public void configure(StatisticsController statisticsController) {
         this.statisticsController = statisticsController;
         showCurrentWeek();
     }
 
+    /**
+     * Validates the user-selected date range and refreshes the displayed statistics.
+     *
+     * <p>Both dates are required, and the end date must not precede the start date. Validation
+     * failures are reported to the user without replacing the currently displayed statistics.</p>
+     */
     @FXML
     private void updateStatistics() {
         LocalDate startDate = statisticsStartDatePicker.getValue();
@@ -45,6 +57,10 @@ public class StatisticsViewController {
         refreshStatistics(startDate, endDate);
     }
 
+    /**
+     * Selects the period from the Monday of the current week through today and, when configured,
+     * refreshes the statistics for that period.
+     */
     @FXML
     private void showCurrentWeek() {
         LocalDate today = LocalDate.now();
@@ -55,6 +71,17 @@ public class StatisticsViewController {
         }
     }
 
+    /**
+     * Retrieves and displays total study time and study time grouped by subject for an inclusive
+     * date range.
+     *
+     * <p>The subject chart contains one bar per subject, ordered alphabetically, with values
+     * expressed in minutes. If the underlying session data cannot be read, an error is shown to
+     * the user.</p>
+     *
+     * @param startDate the first date in the requested statistics period
+     * @param endDate the last date in the requested statistics period
+     */
     private void refreshStatistics(LocalDate startDate, LocalDate endDate) {
         try {
             Map<String, Duration> timeBySubject = statisticsController.getStudyTimeBySubject(startDate, endDate);

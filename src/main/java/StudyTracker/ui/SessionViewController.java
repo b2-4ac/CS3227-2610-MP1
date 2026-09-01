@@ -32,6 +32,12 @@ public class SessionViewController {
 
     private TimerController timerController;
 
+    /**
+     * Configures the session-table columns after their FXML fields have been injected.
+     *
+     * <p>Each row displays the session's subject, derived start and end times, and total active
+     * study duration.</p>
+     */
     @FXML
     private void initialize() {
         sessionSubjectColumn.setCellValueFactory(cell ->
@@ -44,11 +50,24 @@ public class SessionViewController {
                 new ReadOnlyStringWrapper(UiSupport.formatDuration(cell.getValue().getDuration())));
     }
 
+    /**
+     * Supplies the controller used to retrieve saved study sessions and performs the initial load
+     * of the table.
+     *
+     * @param timerController the timer controller that provides access to past sessions
+     */
     public void configure(TimerController timerController) {
         this.timerController = timerController;
         refreshSessions();
     }
 
+    /**
+     * Validates the selected date range and refreshes the table using the selected filters.
+     *
+     * <p>A supplied start date and end date are inclusive. The filter currently compares the
+     * derived start date of each session. If the end date precedes the start date, an error is
+     * displayed and the existing table contents are retained.</p>
+     */
     @FXML
     private void applyFilter() {
         LocalDate startDate = sessionStartDatePicker.getValue();
@@ -60,6 +79,9 @@ public class SessionViewController {
         refreshSessions();
     }
 
+    /**
+     * Clears both date filters and reloads all available sessions.
+     */
     @FXML
     private void clearFilter() {
         sessionStartDatePicker.setValue(null);
@@ -67,6 +89,13 @@ public class SessionViewController {
         refreshSessions();
     }
 
+    /**
+     * Retrieves past sessions, applies the currently selected inclusive date filters, and updates
+     * the session table and displayed session count.
+     *
+     * <p>If either date filter is empty, that side of the date range is left unbounded. Any
+     * failure while loading saved sessions is reported to the user in an error dialog.</p>
+     */
     private void refreshSessions() {
         try {
             LocalDate startDate = sessionStartDatePicker.getValue();

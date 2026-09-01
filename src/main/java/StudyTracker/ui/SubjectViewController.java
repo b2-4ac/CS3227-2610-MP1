@@ -22,6 +22,12 @@ public class SubjectViewController {
 
     private SubjectController subjectController;
 
+    /**
+     * Configures the subject-name table column and keeps the delete action available only while
+     * a subject is selected.
+     *
+     * <p>This method is invoked automatically after the FXML fields have been injected.</p>
+     */
     @FXML
     private void initialize() {
         subjectNameColumn.setCellValueFactory(cell ->
@@ -32,11 +38,22 @@ public class SubjectViewController {
                         deleteSubjectButton.setDisable(newSelection == null));
     }
 
+    /**
+     * Supplies the controller used to manage subjects and performs the initial table load.
+     *
+     * @param subjectController the controller that creates, retrieves, and deletes subjects
+     */
     public void configure(SubjectController subjectController) {
         this.subjectController = subjectController;
         refreshSubjects();
     }
 
+    /**
+     * Adds the trimmed name entered by the user as a subject and refreshes the displayed list.
+     *
+     * <p>Blank names, duplicate names, and failures while saving are reported to the user. The
+     * input field is cleared only after a subject has been added successfully.</p>
+     */
     @FXML
     private void addSubject() {
         String subjectName = newSubjectNameField.getText().trim();
@@ -56,6 +73,12 @@ public class SubjectViewController {
         }
     }
 
+    /**
+     * Deletes the currently selected subject and refreshes the displayed list.
+     *
+     * <p>If no table row is selected, this method performs no action. A storage failure is
+     * reported to the user.</p>
+     */
     @FXML
     private void deleteSelectedSubject() {
         int index = subjectsTable.getSelectionModel().getSelectedIndex();
@@ -71,6 +94,12 @@ public class SubjectViewController {
         }
     }
 
+    /**
+     * Loads all subjects from the subject controller into the table and clears the delete
+     * selection state.
+     *
+     * <p>If the subject list cannot be loaded, an error is shown to the user.</p>
+     */
     private void refreshSubjects() {
         try {
             subjectsTable.setItems(FXCollections.observableArrayList(subjectController.getSubjects()));

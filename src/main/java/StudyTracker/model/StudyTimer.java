@@ -89,6 +89,16 @@ public class StudyTimer {
         return session;
     }
 
+    /**
+     * Returns the total active study time recorded by this timer so far.
+     *
+     * <p>The returned duration includes every completed active interval. If the
+     * timer is currently running, it also includes the time from the current run's
+     * start until this method is called. Time spent while paused is excluded because
+     * paused periods are not active intervals.</p>
+     *
+     * @return total active study duration for the current timer session
+     */
     public Duration getElapsedTime() {
         Duration completedDuration = intervals.stream()
                 .map(interval -> Duration.between(interval.getStartTime(), interval.getEndTime()))

@@ -5,7 +5,9 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/** Represents one uninterrupted period of active study within a session. */
+/** 
+ * Represents one uninterrupted period of active study within a session.
+ */
 public class StudyInterval {
 
     private final LocalDateTime startTime;
